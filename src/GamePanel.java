@@ -48,6 +48,7 @@ public class GamePanel extends JPanel {
                 if (isBomb){
                     amountOfBombs++;
                 }
+                Tile currentTile = tiles[i][j];
                 int J = j;
                 int I = i;
                 /*
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel {
                  * Tile currentTile = tiles[i][j];
                  */
 
-                tiles[i][j].addMouseListener(new MouseAdapter() {
+                currentTile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if(firstClick){
@@ -63,13 +64,11 @@ public class GamePanel extends JPanel {
                             firstClick = false;
                         }
 
-                        // FIXME: retype highly nested if statements.
-
                         //if tile is closed then...
-                        if (!tiles[I][J].state){
+                        if (!currentTile.state){
                             if (leftClickAndNotFlagged(e, I, J)){
                                 //if the tile does not have a bomb...
-                                if (!tiles[I][J].hasBomb){
+                                if (!currentTile.hasBomb){
                                     //open the tile and count how many bombs around it.
                                     revealTiles(I, J);
                                     if (countBombs(I, J) == null){
@@ -78,17 +77,17 @@ public class GamePanel extends JPanel {
                                 }
                                 // if the tile has a bomb...
                                 else {
-                                    tiles[I][J].openTile();
+                                    currentTile.openTile();
                                     endGame();// ends the game, and reveals all other bombs
                                 }
                             } else if (SwingUtilities.isRightMouseButton(e)) {
                                 //if right click,
                                 //if tile is not flagged, mark it.
-                                if (!tiles[I][J].flagged) {
-                                    tiles[I][J].flagTile();
+                                if (!currentTile.flagged) {
+                                    currentTile.flagTile();
                                     amountOfBombs--;
                                 } else {// else, unflagging the tile.
-                                    tiles[I][J].unflagTile();
+                                    currentTile.unflagTile();
                                     amountOfBombs++;
                                 }
                             }
