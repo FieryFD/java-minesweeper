@@ -20,7 +20,7 @@ public class GameFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(rows*35, columns*35);
         this.setResizable(false);
-        this.setTitle("MINESWEEPER mini Project");
+        this.setTitle("MINESWEEPER in Java");
 
         gbl = new GridBagLayout();
         gbc = new GridBagConstraints();
