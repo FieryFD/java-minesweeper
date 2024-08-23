@@ -51,10 +51,6 @@ public class GamePanel extends JPanel {
                 Tile currentTile = tiles[i][j];
                 int J = j;
                 int I = i;
-                /*
-                 * TODO: set tile instance to a variable later for better readability
-                 * Tile currentTile = tiles[i][j];
-                 */
 
                 currentTile.addMouseListener(new MouseAdapter() {
                     @Override
@@ -64,32 +60,33 @@ public class GamePanel extends JPanel {
                             firstClick = false;
                         }
 
-                        //if tile is closed then...
-                        if (!currentTile.state){
-                            if (leftClickAndNotFlagged(e, I, J)){
-                                //if the tile does not have a bomb...
-                                if (!currentTile.hasBomb){
-                                    //open the tile and count how many bombs around it.
-                                    revealTiles(I, J);
-                                    if (countBombs(I, J) == null){
-                                        addTilesToQueue(I, J);
-                                    }
-                                }
-                                // if the tile has a bomb...
-                                else {
-                                    currentTile.openTile();
-                                    endGame();// ends the game, and reveals all other bombs
-                                }
-                            } else if (SwingUtilities.isRightMouseButton(e)) {
-                                //if right click,
-                                //if tile is not flagged, mark it.
-                                if (!currentTile.flagged) {
-                                    currentTile.flagTile();
-                                    amountOfBombs--;
-                                } else {// else, unflagging the tile.
-                                    currentTile.unflagTile();
-                                    amountOfBombs++;
-                                }
+                        //if tile is open then...
+                        if (currentTile.state) return;
+
+                        if (leftClickAndNotFlagged(e, currentTile)){
+                            //if the tile has a bomb...
+                            if (currentTile.hasBomb) {
+                                //Game over
+                                currentTile.openTile();
+                                endGame();// ends the game, and reveals all other bombs
+                                return;
+                            }
+                            //open the tile and count how many bombs around it.
+                            revealTiles(I, J);
+                            if (countBombs(I, J) == null){
+                                //if no bombs around, add to the zero spread queue
+                                addTilesToQueue(I, J);
+                            }
+                        }
+                        else if (SwingUtilities.isRightMouseButton(e)) {
+                            //if right click,
+                            //if tile is not flagged, mark it.
+                            if (!currentTile.flagged) {
+                                currentTile.flagTile();
+                                amountOfBombs--;
+                            } else {// else, unflagging the tile.
+                                currentTile.unflagTile();
+                                amountOfBombs++;
                             }
                         }
                     }
@@ -250,8 +247,8 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private boolean leftClickAndNotFlagged(MouseEvent e, int I, int J){
-        return SwingUtilities.isLeftMouseButton(e) && !tiles[I][J].flagged;
+    private boolean leftClickAndNotFlagged(MouseEvent e, Tile currentTile){
+        return SwingUtilities.isLeftMouseButton(e) && !currentTile.flagged;
     }
 
     private boolean isTheClickedOrOpenedTile(int i, int j, int iPosition, int jPosition){
